@@ -1,3 +1,3 @@
 # GoGoBoard remote beta
 
-## Entry point `yarn start` or `npm run start`
+## Entry point `yarn` or `npm install` then `yarn start` or `npm run start`
