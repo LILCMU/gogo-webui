@@ -1,4 +1,7 @@
 import React, { FC, useState } from "react";
+import { connect } from "react-redux";
+import { edit } from "src/redux/actions/WidgetButtonActions";
+
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -26,17 +29,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const MyModal: FC<
-  (CommonButtonProps | PadProps) & {
-    index: number;
-    update: (index: number, button: CommonButtonProps | PadProps) => void;
-  }
-> = ({ children, ...props }) => {
+const MyModal: FC<any> = ({ children, ...props }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const { up, down, left, right } = props as PadProps;
-  const { text, type, color } = props as CommonButtonProps;
+  // const { up, down, left, right } = props as PadProps;
+  // const { text, type, color } = props as CommonButtonProps;
+
+  const { text, type, color, textColor, up, down, left, right, size } = props;
 
   const [edit_text, setText] = useState(text);
   const [edit_up, setUp] = useState(up);
@@ -50,6 +50,29 @@ const MyModal: FC<
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleEdit = () => {
+    const { edit, index } = props;
+
+    let widget = {};
+
+    if (type === "pad") {
+      widget = {
+        up: edit_up,
+        down: edit_down,
+        left: edit_left,
+        right: edit_right,
+        size: size,
+        type,
+      };
+    } else if (type === "common") {
+      widget = { type, text: edit_text, color, textColor };
+    } else {
+      widget = { type, text: edit_text };
+    }
+    edit(index, widget);
+    handleClose();
   };
 
   return (
@@ -81,28 +104,28 @@ const MyModal: FC<
               <>
                 <TextField
                   id="up"
-                  label="up"
+                  label="UP"
                   value={edit_up}
                   onChange={({ target }) => setUp(target.value)}
                 />
                 <Spacer height="15px" />
                 <TextField
                   id="down"
-                  label="down"
+                  label="DOWN"
                   value={edit_down}
                   onChange={({ target }) => setDown(target.value)}
                 />
                 <Spacer height="15px" />
                 <TextField
                   id="left"
-                  label="left"
+                  label="LEFT"
                   value={edit_left}
                   onChange={({ target }) => setLeft(target.value)}
                 />
                 <Spacer height="15px" />
                 <TextField
                   id="right"
-                  label="right"
+                  label="RIGHT"
                   value={edit_right}
                   onChange={({ target }) => setRight(target.value)}
                 />
@@ -111,7 +134,7 @@ const MyModal: FC<
               <>
                 <TextField
                   id="text"
-                  label="text"
+                  label="TEXT"
                   value={edit_text}
                   onChange={({ target }) => setText(target.value)}
                 />
@@ -131,21 +154,7 @@ const MyModal: FC<
             <Button
               variant="contained"
               color="primary"
-              onClick={() => {
-                const { index, update } = props;
-                if (type === "pad") {
-                  update(index, {
-                    up: edit_up,
-                    down: edit_down,
-                    left: edit_left,
-                    right: edit_right,
-                    type,
-                  });
-                } else if (type === "common" || type === "status") {
-                  update(index, { type, text: edit_text, color });
-                }
-                handleClose();
-              }}
+              onClick={() => handleEdit()}
               fullWidth
             >
               SAVE
@@ -167,4 +176,9 @@ const MyModal: FC<
     </div>
   );
 };
-export default MyModal;
+
+const mapDispatchToProps = {
+  edit,
+};
+
+export default connect(null, mapDispatchToProps)(MyModal);

@@ -1,7 +1,7 @@
 import { AppBar, Content } from "src/components";
 function App() {
   return (
-    <div style={{ height: "100vh" }}>
+    <div className="App">
       <AppBar />
       <Content />
     </div>

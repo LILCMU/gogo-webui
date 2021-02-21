@@ -4,6 +4,17 @@
   box-sizing: border-box;
 }
 
+.App{
+  height: 100vh;
+}
+
+@media only screen and (min-width: 700px){
+  html{
+    max-width: 700px;
+    margin: 0 auto;
+  }
+}
+
 button{
   border: none;
   outline: none;

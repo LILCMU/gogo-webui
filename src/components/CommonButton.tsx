@@ -1,15 +1,22 @@
-import Button from "@material-ui/core/Button";
-import { FC, useContext } from "react";
-import { MqttContext } from "src/hooks/mqtt";
+import { FC } from "react";
+import { connect } from "react-redux";
+import { publish } from "src/redux/actions/MqttActions";
 
-const CommonButton: FC<CommonButtonProps> = ({ text, color = "", disable }) => {
-  const { publish } = useContext(MqttContext) as AppContext;
+import Button from "@material-ui/core/Button";
+
+const CommonButton: FC<CommonButtonProps & { publish: any }> = ({
+  text,
+  color = "",
+  disable,
+  ...props
+}) => {
+  const { publish } = props;
   return (
     <Button
       variant="contained"
       style={{
-        width: "100px",
-        height: "35px",
+        width: "30vh",
+        height: "7vh",
         backgroundColor: color,
         textTransform: "none",
         fontWeight: "normal",
@@ -23,4 +30,8 @@ const CommonButton: FC<CommonButtonProps> = ({ text, color = "", disable }) => {
   );
 };
 
-export default CommonButton;
+const mapDispatchToProps = {
+  publish,
+};
+
+export default connect(null, mapDispatchToProps)(CommonButton);

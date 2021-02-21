@@ -1,4 +1,4 @@
-interface ActionButton extends PropsWithChildren {
+interface WidgetButton extends PropsWithChildren {
   type: "pad" | "common" | "status";
   color?: string;
   disable?: boolean;
@@ -9,13 +9,13 @@ interface SpacerProps {
   height?: string;
 }
 
-interface CommonButtonProps extends ActionButton {
+interface CommonButtonProps extends WidgetButton {
   text: string;
   color?: string;
   textColor?: string;
 }
 
-interface PadProps extends ActionButton {
+interface PadProps extends WidgetButton {
   up: string;
   down: string;
   left: string;
@@ -23,15 +23,17 @@ interface PadProps extends ActionButton {
   size?: string;
 }
 
-interface StatusProps extends ActionButton {
+interface StatusProps extends WidgetButton {
   text: string;
 }
 
-interface AppContext {
+type AllWidgetButtonProps = CommonButtonProps | PadProps | StatusProps;
+
+type WidgetsStateProps = { [index: number]: AllWidgetButtonProps };
+
+type MqttStateProps = {
   client: MqttClient;
-  publish: (topic: string, channel: number) => any;
-  subscribe: (
-    topic: string,
-    fn: (topic: string, message: string) => any
-  ) => any;
-}
+  prefix: string;
+  defaultPayload: string;
+  channel: string;
+};

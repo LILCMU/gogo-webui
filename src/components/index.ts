@@ -5,3 +5,4 @@ export { default as CommonButton } from "./CommonButton";
 export { default as Spacer } from "./Spacer";
 export { default as Modal } from "./Modal";
 export { default as Status } from "./Status";
+export { default as ChannelModal } from "./ChannelModal";

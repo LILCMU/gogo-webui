@@ -1,15 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { MqttProvider } from "./hooks/mqtt";
 import "./index.css";
+import { Provider } from "react-redux";
+import { store } from "src/redux/store";
+// import { MqttProvider } from "./hooks/mqtt";
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <MqttProvider>
+    <Provider store={store}>
       <App />
-    </MqttProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

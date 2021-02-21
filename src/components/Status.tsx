@@ -1,22 +1,24 @@
-import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
-import { MqttClient } from "mqtt";
-import { FC, useContext, useEffect, useState } from "react";
-import { MqttContext } from "src/hooks/mqtt";
+import { FC, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import {
+  subscribe,
+  unsubscribe,
+  on_message,
+} from "src/redux/actions/MqttActions";
 
-const Status: FC<StatusProps> = ({ text }) => {
-  const { client } = useContext(MqttContext) as AppContext;
+import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
+
+const Status: FC<
+  StatusProps & { subscribe: any; on_message: any; unsubscribe: any }
+> = ({ text, ...props }) => {
+  const { subscribe, unsubscribe, on_message } = props;
   const [message, setMessage] = useState<string>("off");
 
   useEffect(() => {
-    client.subscribe(text);
-    client.on("message", (topic: string, message: string) => {
-      if (topic === text) {
-        setMessage(message.toString());
-        // console.log(message.toString());
-      }
-    });
+    subscribe(text);
+    on_message(text, (message: string) => setMessage(message.toString()));
     return () => {
-      (client as MqttClient).unsubscribe(text);
+      unsubscribe(text);
     };
   });
   return (
@@ -24,10 +26,12 @@ const Status: FC<StatusProps> = ({ text }) => {
       // fontSize="large"
       style={{
         color: message === "on" ? "orange" : "darkgrey",
-        fontSize: "60px",
+        fontSize: "18vh",
       }}
     />
   );
 };
 
-export default Status;
+const mapDispatchToProps = { subscribe, on_message, unsubscribe };
+
+export default connect(null, mapDispatchToProps)(Status);
