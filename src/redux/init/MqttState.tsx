@@ -1,6 +1,6 @@
 import mqtt, { IClientOptions } from "mqtt";
 
-const brokerUrl: string = "ws://message-broker.gogoboard.org:8083/mqtt";
+const brokerUrl: string = "wss://remotelab-broker.gogoboard.org:8443/mqtt";
 
 const prefix: string = "GoGoBoard/BroadcastT";
 const defaultPayload: string = "gogoBroadcastMQTT!@LILCMU";
