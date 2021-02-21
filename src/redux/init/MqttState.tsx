@@ -8,7 +8,7 @@ const channel: string = "0";
 
 const options: IClientOptions = {
   reconnectPeriod: 2500,
-  protocol: "ws",
+  protocol: "wss",
 };
 
 export const initialState: MqttStateProps = {
