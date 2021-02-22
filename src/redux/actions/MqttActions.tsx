@@ -21,7 +21,7 @@ export const unsubscribe = (topic: string) => ({
 
 export const on_message = (
   topic: string,
-  callback: (message: string) => any
+  callback: (selected_topic: string, message: string) => any
 ) => ({
   type: ON_MESSAGE,
   payload: { topic, callback },

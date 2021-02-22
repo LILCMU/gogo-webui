@@ -16,7 +16,10 @@ const Status: FC<
 
   useEffect(() => {
     subscribe(text);
-    on_message(text, (message: string) => setMessage(message.toString()));
+    on_message(text, (received_topic: string, _: string) => {
+      const message_after_topic = received_topic.split(`${text}/`);
+      setMessage(message_after_topic[1]);
+    });
     return () => {
       unsubscribe(text);
     };

@@ -9,14 +9,14 @@ const pad1: PadProps = {
 
 const StartButton: CommonButtonProps = {
   type: "common",
-  text: "Start",
+  text: "start",
   color: "#2ecc71",
   textColor: "white",
 };
 
 const StopButton: CommonButtonProps = {
   type: "common",
-  text: "Stop",
+  text: "stop",
   color: "#e74c3c",
   textColor: "white",
 };

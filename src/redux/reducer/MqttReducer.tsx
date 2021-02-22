@@ -21,17 +21,18 @@ const MqttReducer = (
       return state;
 
     case SUBSCRIBE:
-      client.subscribe(action.payload.topic);
+      client.subscribe(broadcastUrl + action.payload.topic + "/#");
       return state;
 
     case UNSUBSCRIBE:
-      client.unsubscribe(action.payload.topic);
+      client.unsubscribe(broadcastUrl + action.payload.topic + "/#");
       return state;
 
     case ON_MESSAGE:
-      client.on("message", (topic: string, message: string) => {
-        if ((action.payload.topic = topic)) {
-          action.payload.callback(message);
+      client.on("message", (received_topic: string, message: string) => {
+        if (received_topic.includes(broadcastUrl + action.payload.topic)) {
+          // TODO: Add password check with message
+          action.payload.callback(received_topic, message);
         }
       });
       return state;
