@@ -2,6 +2,14 @@ interface WidgetButton extends PropsWithChildren {
   type: "pad" | "common" | "status";
   color?: string;
   disable?: boolean;
+  position: {
+    top: number;
+    left: number;
+  };
+  size: {
+    width: number;
+    height: number;
+  };
 }
 
 interface SpacerProps {
@@ -20,7 +28,6 @@ interface PadProps extends WidgetButton {
   down: string;
   left: string;
   right: string;
-  size?: string;
 }
 
 interface StatusProps extends WidgetButton {
@@ -29,11 +36,26 @@ interface StatusProps extends WidgetButton {
 
 type AllWidgetButtonProps = CommonButtonProps | PadProps | StatusProps;
 
-type WidgetsStateProps = { [index: number]: AllWidgetButtonProps };
+// type WidgetsStateProps = { [index: number]: AllWidgetButtonProps };
+
+type GridSize = {
+  width: number;
+  height: number;
+};
+
+type WidgetsStateProps = {
+  widgets: Array<AllWidgetButtonProps>;
+  gridSize: GridSize;
+};
 
 type MqttStateProps = {
   client: MqttClient;
   prefix: string;
   defaultPayload: string;
   channel: string;
+};
+
+type AppStateProps = {
+  widget: WidgetsStateProps;
+  mqtt: MqttStateProps;
 };

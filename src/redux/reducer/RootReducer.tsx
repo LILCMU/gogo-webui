@@ -3,7 +3,7 @@ import WidgetButtonReducer from "./WidgetButtonReducer";
 import MqttReducer from "./MqttReducer";
 
 const RootReducer = combineReducers({
-  widgets: WidgetButtonReducer,
+  widget: WidgetButtonReducer,
   mqtt: MqttReducer,
 });
 export default RootReducer;
