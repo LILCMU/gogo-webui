@@ -2,19 +2,18 @@ import { FC, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   subscribe,
-  unsubscribe,
-  on_message,
   SubscribeType,
+  on_message,
   OnMessageType,
+  unsubscribe,
   UnsubscribeType,
 } from "src/redux/actions/MqttActions";
 
-import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
-
+import { useTheme, Button } from "@material-ui/core";
 import { Modal } from "..";
 
-interface StatusWidgetProps {
-  widget: StatusProps;
+interface DisplayWidgetProps {
+  widget: DisplayProps;
   disable: boolean;
   gridSize: GridSize;
   subscribe: SubscribeType;
@@ -22,7 +21,7 @@ interface StatusWidgetProps {
   unsubscribe: UnsubscribeType;
 }
 
-const Status: FC<StatusWidgetProps> = ({
+const Display: FC<DisplayWidgetProps> = ({
   widget,
   disable,
   gridSize,
@@ -30,9 +29,10 @@ const Status: FC<StatusWidgetProps> = ({
   on_message,
   unsubscribe,
 }) => {
-  const [message, setMessage] = useState<string>("off");
+  const { text, color = "", size } = widget;
+  const [message, setMessage] = useState("Message");
 
-  const { text, size, color } = widget;
+  const theme = useTheme();
 
   useEffect(() => {
     if (!disable) {
@@ -42,6 +42,7 @@ const Status: FC<StatusWidgetProps> = ({
         setMessage(message_after_topic[1]);
       });
     }
+
     return () => {
       if (!disable) {
         unsubscribe(text);
@@ -50,25 +51,23 @@ const Status: FC<StatusWidgetProps> = ({
   });
 
   const Content = () => (
-    <div
+    <Button
+      variant="outlined"
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         width: `${size.width * gridSize.width}px`,
         height: `${size.height * gridSize.height}px`,
+        backgroundColor: `${theme.palette.grey[400]}`,
+        textTransform: "none",
+        fontWeight: "normal",
+        fontSize: "20px",
+        borderRadius: `${theme.spacing(1)}px`,
+        border: `5px solid ${color}`,
       }}
+      onClick={() => subscribe(text)}
+      disabled
     >
-      <EmojiObjectsIcon
-        style={{
-          color: message === "on" ? color : "darkgrey",
-          fontSize: `${Math.min(
-            size.width * gridSize.width,
-            size.height * gridSize.height
-          )}px`,
-        }}
-      />
-    </div>
+      {message}
+    </Button>
   );
 
   return (
@@ -76,6 +75,10 @@ const Status: FC<StatusWidgetProps> = ({
   );
 };
 
-const mapDispatchToProps = { subscribe, on_message, unsubscribe };
+const mapDispatchToProps = {
+  subscribe,
+  on_message,
+  unsubscribe,
+};
 
-export default connect(null, mapDispatchToProps)(Status);
+export default connect(null, mapDispatchToProps)(Display);

@@ -1,10 +1,13 @@
 import { BoxMap } from "../DragLayer/Container";
 // import { CommonButton, Pad, Status } from ".";
 import CommonButton from "./CommonButton";
+import Display from "./Display";
+import Input from "./Input";
 import Pad from "./Pad";
 import Status from "./Status";
+import ToggleButton from "./ToggleButton";
 
-export { CommonButton, Pad, Status };
+export { CommonButton, Pad, Status, ToggleButton };
 
 type renderType = (
   widget: AllWidgetButtonProps,
@@ -20,7 +23,7 @@ export const renderWidget: renderType = (widget, editing, gridSize) => {
         ...position,
         item: (
           <CommonButton
-            {...(widget as CommonButtonProps)}
+            widget={widget as CommonButtonProps}
             disable={editing}
             gridSize={gridSize}
           />
@@ -31,7 +34,7 @@ export const renderWidget: renderType = (widget, editing, gridSize) => {
         ...position,
         item: (
           <Pad
-            {...(widget as PadProps)}
+            widget={widget as PadProps}
             disable={editing}
             gridSize={gridSize}
           />
@@ -42,12 +45,47 @@ export const renderWidget: renderType = (widget, editing, gridSize) => {
         ...position,
         item: (
           <Status
-            {...(widget as StatusProps)}
+            widget={widget as StatusProps}
             disable={editing}
             gridSize={gridSize}
           />
         ),
       };
+    case "toggle":
+      return {
+        ...position,
+        item: (
+          <ToggleButton
+            widget={widget as ToggleProps}
+            disable={editing}
+            gridSize={gridSize}
+          />
+        ),
+      };
+    case "display":
+      return {
+        ...position,
+        item: (
+          <Display
+            widget={widget as ToggleProps}
+            disable={editing}
+            gridSize={gridSize}
+          />
+        ),
+      };
+
+    case "input":
+      return {
+        ...position,
+        item: (
+          <Input
+            widget={widget as InputProps}
+            disable={editing}
+            gridSize={gridSize}
+          />
+        ),
+      };
+
     default:
       return { ...position, item: null };
   }

@@ -11,19 +11,30 @@ const WidgetButtonReducer = (
   state: WidgetsStateProps = initialState,
   action: AnyAction
 ) => {
+  let new_widgets;
   switch (action.type) {
     case ADD:
-      return state;
+      const added_widgets = state.widgets;
+      const add_widget: AllWidgetButtonProps = {
+        ...action.payload.widget,
+        position: { left: 0, top: 0 },
+      };
+      added_widgets.push(add_widget);
+      return { ...state, widgets: added_widgets };
     case EDIT:
       const { index, widget } = action.payload;
-      const new_widgets = state.widgets;
+      new_widgets = state.widgets;
       // if(widget.type==='pad'){
       //   new_state[action.payload.index] = {}
       // }
       new_widgets[index] = widget;
       return { ...state, widgets: new_widgets };
     case REMOVE:
-      return state;
+      new_widgets = state.widgets.filter(
+        (_, index) => index !== action.payload.index
+      );
+
+      return { ...state, widgets: new_widgets };
     case CHANGE_GRID_SIZE:
       const { width, height } = action.payload;
       return { ...state, gridSize: { width, height } };

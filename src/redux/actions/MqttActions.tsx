@@ -4,35 +4,35 @@ export const UNSUBSCRIBE = "UNSUBSCRIBE";
 export const ON_MESSAGE = "ON_MESSAGE";
 export const CHANGE_CHANNEL = "CHANGE_CHANNEL";
 
-export type publish_type = (
+export type PublishType = (
   topic: string,
   message?: string
 ) => { type: string; payload: { topic: string } };
 
-export const publish: publish_type = (topic, message) => ({
+export const publish: PublishType = (topic, message) => ({
   type: PUBLISH,
   payload: { topic, message },
 });
 
-export type subscribe_type = (
+export type SubscribeType = (
   topic: string
 ) => { type: string; payload: { topic: string } };
 
-export const subscribe: subscribe_type = (topic) => ({
+export const subscribe: SubscribeType = (topic) => ({
   type: SUBSCRIBE,
   payload: { topic },
 });
 
-export type unsubscribe_type = (
+export type UnsubscribeType = (
   topic: string
 ) => { type: string; payload: { topic: string } };
 
-export const unsubscribe: unsubscribe_type = (topic) => ({
+export const unsubscribe: UnsubscribeType = (topic) => ({
   type: UNSUBSCRIBE,
   payload: { topic },
 });
 
-export type on_message_type = (
+export type OnMessageType = (
   topic: string,
   callback: (selected_topic: string, message: string) => any
 ) => {
@@ -43,16 +43,16 @@ export type on_message_type = (
   };
 };
 
-export const on_message: on_message_type = (topic, callback) => ({
+export const on_message: OnMessageType = (topic, callback) => ({
   type: ON_MESSAGE,
   payload: { topic, callback },
 });
 
-export type change_channel_type = (
+export type ChangeChannelType = (
   channel: string
 ) => { type: string; payload: { channel: string } };
 
-export const change_channel: change_channel_type = (channel) => ({
+export const change_channel: ChangeChannelType = (channel) => ({
   type: CHANGE_CHANNEL,
   payload: { channel },
 });

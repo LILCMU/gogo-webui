@@ -1,6 +1,8 @@
 import { FC, useState } from "react";
 import Container from "./Container";
 import DragPreviewLayer from "./DragPreviewLayer";
+import WidgetDrawer from "./WidgetDrawer";
+import { Modal } from "..";
 
 import clsx from "clsx";
 import { Edit, Check, Code, Add } from "@material-ui/icons";
@@ -21,6 +23,7 @@ const DragLayer: FC = () => {
       bottom: theme.spacing(2),
       right: theme.spacing(2),
       backgroundColor: theme.palette.grey[200],
+      zIndex: 9999,
     },
     fabGreen: {
       color: theme.palette.common.white,
@@ -32,7 +35,7 @@ const DragLayer: FC = () => {
     fabChannel: {
       bottom: theme.spacing(11),
     },
-    fabMove: {
+    fabAdd: {
       bottom: theme.spacing(20),
     },
   }));
@@ -40,6 +43,7 @@ const DragLayer: FC = () => {
   const classes = useStyles();
 
   const [editing, setEditing] = useState<boolean>(false);
+  const [DrawerVisible, setDrawerVisible] = useState<boolean>(false);
 
   return (
     <div style={{ position: "relative" }}>
@@ -61,7 +65,9 @@ const DragLayer: FC = () => {
           <Fab
             aria-label="Edit"
             className={classes.fab}
-            onClick={() => setEditing(true)}
+            onClick={() => {
+              setEditing(true);
+            }}
           >
             <Edit />
           </Fab>
@@ -82,7 +88,10 @@ const DragLayer: FC = () => {
           <Fab
             aria-label="Done"
             className={clsx(classes.fab, classes.fabGreen)}
-            onClick={() => setEditing(false)}
+            onClick={() => {
+              setEditing(false);
+              setDrawerVisible(false);
+            }}
           >
             <Check />
           </Fab>
@@ -91,6 +100,7 @@ const DragLayer: FC = () => {
       {/* Green Check Icon */}
 
       {/* Channel Edit Icon */}
+      {/* TODO: FIX height glint after added modal */}
       <Zoom
         in={editing}
         timeout={transitionDuration}
@@ -102,15 +112,16 @@ const DragLayer: FC = () => {
           <Fab
             aria-label="Channel"
             className={clsx(classes.fab, classes.fabChannel)}
-            onClick={() => {}}
           >
-            <Code />
+            <Modal style={{ position: "relative" }}>
+              <Code />
+            </Modal>
           </Fab>
         </Tooltip>
       </Zoom>
       {/* Channel Edit Icon */}
 
-      {/* Move Icon */}
+      {/* Add Icon */}
       <Zoom
         in={editing}
         timeout={transitionDuration}
@@ -120,15 +131,17 @@ const DragLayer: FC = () => {
       >
         <Tooltip title="Add Widget">
           <Fab
-            aria-label="Move"
-            className={clsx(classes.fab, classes.fabMove)}
+            aria-label="Add"
+            className={clsx(classes.fab, classes.fabAdd)}
             onClick={() => {}}
           >
-            <Add />
+            <WidgetDrawer visible={DrawerVisible} setVisible={setDrawerVisible}>
+              <Add />
+            </WidgetDrawer>
           </Fab>
         </Tooltip>
       </Zoom>
-      {/* Move Icon */}
+      {/* Add Icon */}
     </div>
   );
 };

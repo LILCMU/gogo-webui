@@ -55,7 +55,22 @@ const led: StatusProps = {
     width: 2,
     height: 2,
   },
+  color: "#008b02",
 };
+
+// const toggle1: ToggleProps = {
+//   type: "toggle",
+//   text: "toggle1",
+//   position: {
+//     left: 0,
+//     top: 0,
+//   },
+//   size: {
+//     width: 2,
+//     height: 1,
+//   },
+//   color: "#e67e22",
+// };
 
 export const initialState: WidgetsStateProps = {
   widgets: [pad1, StartButton, StopButton, led],

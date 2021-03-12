@@ -1,31 +1,48 @@
 import { FC } from "react";
 import { connect } from "react-redux";
-import { publish, publish_type } from "src/redux/actions/MqttActions";
+import { publish, PublishType } from "src/redux/actions/MqttActions";
 
-import Button from "@material-ui/core/Button";
+import { useTheme, Button } from "@material-ui/core";
+import { Modal } from "..";
 
-const CommonButton: FC<
-  CommonButtonProps & { publish: publish_type; gridSize: GridSize }
-> = ({ text, color = "", disable, size, gridSize, ...props }) => {
-  const { publish } = props;
+interface CommonProps {
+  widget: CommonButtonProps;
+  disable: boolean;
+  publish: PublishType;
+  gridSize: GridSize;
+}
+
+const CommonButton: FC<CommonProps> = ({
+  widget,
+  disable,
+  gridSize,
+  publish,
+}) => {
+  const { text, color = "", size } = widget;
+
+  const theme = useTheme();
+
+  const Content = () => (
+    <Button
+      variant="contained"
+      style={{
+        width: `${size.width * gridSize.width}px`,
+        height: `${size.height * gridSize.height}px`,
+        backgroundColor: color,
+        textTransform: "none",
+        fontWeight: "normal",
+        fontSize: "20px",
+        borderRadius: `${theme.spacing(1)}px`,
+      }}
+      onClick={() => publish(text)}
+      disabled={disable}
+    >
+      {text}
+    </Button>
+  );
+
   return (
-    <div>
-      <Button
-        variant="contained"
-        style={{
-          width: `${size.width * gridSize.width}px`,
-          height: `${size.height * gridSize.height}px`,
-          backgroundColor: color,
-          textTransform: "none",
-          fontWeight: "normal",
-          fontSize: "20px",
-        }}
-        onClick={() => publish(text)}
-        disabled={disable}
-      >
-        {text}
-      </Button>
-    </div>
+    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

@@ -16,6 +16,7 @@
     "mqtt": "^4.2.6",
     "normalize.css": "^8.0.1",
     "react": "^17.0.1",
+    "react-color": "^2.19.3",
     "react-device-detect": "^1.15.0",
     "react-dnd": "^13.0.0",
     "react-dnd-html5-backend": "^12.1.0",
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@types/immutability-helper": "^2.6.3",
+    "@types/react-color": "^3.0.4",
     "@types/react-dnd": "^3.0.2",
     "@types/react-dnd-html5-backend": "^3.0.2",
     "@types/react-dnd-touch-backend": "^0.5.0",

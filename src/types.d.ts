@@ -1,5 +1,5 @@
-interface WidgetButton extends PropsWithChildren {
-  type: "pad" | "common" | "status";
+interface WidgetButton {
+  type: "pad" | "common" | "status" | "toggle" | "display" | "input";
   color?: string;
   disable?: boolean;
   position: {
@@ -33,6 +33,10 @@ interface PadProps extends WidgetButton {
 interface StatusProps extends WidgetButton {
   text: string;
 }
+
+interface ToggleProps extends CommonButtonProps {}
+interface DisplayProps extends CommonButtonProps {}
+interface InputProps extends CommonButtonProps {}
 
 type AllWidgetButtonProps = CommonButtonProps | PadProps | StatusProps;
 

@@ -8,6 +8,8 @@ import {
   useState,
 } from "react";
 import { connect } from "react-redux";
+import { isMobile } from "react-device-detect";
+
 import {
   edit,
   EditType,
@@ -49,12 +51,13 @@ const Container: FC<ContainerProps> = ({
   edit,
   change_grid_size,
 }) => {
-  const [boxes, setBoxes] = useState<Array<BoxMap>>([]);
   const { widgets, gridSize } = widget;
+  const [boxes, setBoxes] = useState<Array<BoxMap>>([]);
+
   useEffect(() => {
-    const BoxList: Array<BoxMap> = widgets.map((widget) => {
-      return renderWidget(widget, editing, gridSize);
-    });
+    const BoxList: Array<BoxMap> = widgets.map((widget) =>
+      renderWidget(widget, editing, gridSize)
+    );
     setBoxes(BoxList);
   }, [widgets, editing, gridSize]);
 
@@ -115,14 +118,27 @@ const Container: FC<ContainerProps> = ({
 
   return (
     <div style={styles} ref={drop}>
-      {boxes.map((box, index) => (
-        <DraggableBox
-          key={index.toString()}
-          id={index.toString()}
-          {...box}
-          editing={editing}
-        />
-      ))}
+      {/* {widgets.map((widget, index) => {
+        const Widget = renderWidget(widget, editing, gridSize);
+        return (
+          <DraggableBox
+            key={index.toString()}
+            id={index.toString()}
+            {...Widget}
+            editing={editing}
+          />
+        );
+      })} */}
+      {boxes.map((widget, index) => {
+        return (
+          <DraggableBox
+            key={index.toString()}
+            id={index.toString()}
+            {...widget}
+            editing={editing}
+          />
+        );
+      })}
       <DragGrid change_grid_size={change_grid_size} editing={editing} />
     </div>
   );
@@ -137,8 +153,6 @@ const DragGrid: FC<{
   const ref = useRef<any>(null);
 
   useEffect(() => {
-    // console.log("width", ref.current ? ref.current.offsetWidth : 0);
-    // console.log("height", ref.current ? ref.current.offsetHeight : 0);
     const { offsetWidth, offsetHeight } = ref.current;
     change_grid_size(offsetWidth, offsetHeight);
   }, [ref, change_grid_size]);
@@ -156,27 +170,38 @@ const DragGrid: FC<{
 
   return (
     <Grid container style={{ height: "100%", opacity: editing ? 0.25 : 0 }}>
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => (
-        <>
-          <Grid key={index} container item xs={6}>
-            <Grid
-              ref={index === 1 ? ref : null}
-              item
-              xs={3}
-              style={styles}
-            ></Grid>
-            <Grid item xs={3} style={styles}></Grid>
-            <Grid item xs={3} style={styles}></Grid>
-            <Grid item xs={3} style={styles}></Grid>
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((_, index) =>
+        isMobile ? (
+          <Grid key={index} container item xs={12}>
+            <Grid item xs={2} ref={index === 1 ? ref : null} style={styles} />
+            <Grid item xs={2} style={styles} />
+            <Grid item xs={2} style={styles} />
+            <Grid item xs={2} style={styles} />
+            <Grid item xs={2} style={styles} />
+            <Grid item xs={2} style={styles} />
           </Grid>
-          <Grid container item xs={6}>
-            <Grid item xs={3} style={styles}></Grid>
-            <Grid item xs={3} style={styles}></Grid>
-            <Grid item xs={3} style={styles}></Grid>
-            <Grid item xs={3} style={styles}></Grid>
-          </Grid>
-        </>
-      ))}
+        ) : (
+          <>
+            <Grid key={index} container item xs={6}>
+              <Grid
+                ref={index === 1 ? ref : null}
+                item
+                xs={3}
+                style={styles}
+              ></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+            </Grid>
+            <Grid container item xs={6}>
+              <Grid item xs={3} style={styles}></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+              <Grid item xs={3} style={styles}></Grid>
+            </Grid>
+          </>
+        )
+      )}
     </Grid>
   );
 };
