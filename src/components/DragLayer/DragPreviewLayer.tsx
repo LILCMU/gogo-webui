@@ -56,10 +56,6 @@ const DragPreviewLayer: FC<{ width: number; height: number }> = ({
     isDragging: monitor.isDragging(),
   }));
 
-  if (!isDragging) {
-    return null;
-  }
-
   const renderItem = () => {
     switch (itemType) {
       case ItemTypes.BOX:
@@ -68,6 +64,10 @@ const DragPreviewLayer: FC<{ width: number; height: number }> = ({
         return null;
     }
   };
+
+  if (!isDragging) {
+    return null;
+  }
 
   return (
     <div style={layerStyles}>

@@ -4,7 +4,6 @@ import { publish, PublishType } from "src/redux/actions/MqttActions";
 
 import { ToggleOn, ToggleOff } from "@material-ui/icons";
 import { Button } from "@material-ui/core";
-import { Modal } from "..";
 
 interface ToggleProps {
   widget: CommonButtonProps;
@@ -27,42 +26,38 @@ const ToggleButton: FC<ToggleProps> = ({
     publish(text + "/" + on ? "on" : "off");
   };
 
-  const Content = () => (
+  return (
     <Button
       style={{
         width: `${size.width * gridSize.width}px`,
         height: `${size.height * gridSize.height}px`,
-        // backgroundColor: color,
+        backgroundColor: `${disable ? "#3f3f3f50" : ""}`,
+        fontSize: `${
+          Math.min(size.width * gridSize.width, size.height * gridSize.height) +
+          30
+        }px`,
+        display: "flex",
+        justifyContent: "center",
       }}
       onClick={() => handleToggle()}
       disabled={disable}
     >
       {on ? (
         <ToggleOn
+          fontSize="inherit"
           style={{
             color: color,
-            fontSize: `${Math.min(
-              size.width * gridSize.width,
-              size.height * gridSize.height
-            )}px`,
           }}
         />
       ) : (
         <ToggleOff
+          fontSize="inherit"
           style={{
-            fontSize: `${Math.min(
-              size.width * gridSize.width,
-              size.height * gridSize.height
-            )}px`,
             color: "darkgrey",
           }}
         />
       )}
     </Button>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

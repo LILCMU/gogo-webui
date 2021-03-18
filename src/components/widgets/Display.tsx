@@ -10,12 +10,10 @@ import {
 } from "src/redux/actions/MqttActions";
 
 import { useTheme, Button } from "@material-ui/core";
-import { Modal } from "..";
 
 interface DisplayWidgetProps {
   widget: DisplayProps;
   disable: boolean;
-  gridSize: GridSize;
   subscribe: SubscribeType;
   on_message: OnMessageType;
   unsubscribe: UnsubscribeType;
@@ -24,12 +22,11 @@ interface DisplayWidgetProps {
 const Display: FC<DisplayWidgetProps> = ({
   widget,
   disable,
-  gridSize,
   subscribe,
   on_message,
   unsubscribe,
 }) => {
-  const { text, color = "", size } = widget;
+  const { text, color = "" } = widget;
   const [message, setMessage] = useState("Message");
 
   const theme = useTheme();
@@ -50,12 +47,12 @@ const Display: FC<DisplayWidgetProps> = ({
     };
   });
 
-  const Content = () => (
+  return (
     <Button
       variant="outlined"
       style={{
-        width: `${size.width * gridSize.width}px`,
-        height: `${size.height * gridSize.height}px`,
+        width: "100%",
+        height: "100%",
         backgroundColor: `${theme.palette.grey[400]}`,
         textTransform: "none",
         fontWeight: "normal",
@@ -68,10 +65,6 @@ const Display: FC<DisplayWidgetProps> = ({
     >
       {message}
     </Button>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

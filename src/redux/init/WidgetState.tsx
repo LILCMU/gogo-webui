@@ -9,7 +9,7 @@ const pad1: PadProps = {
     height: 4,
   },
   position: {
-    left: 2,
+    left: 1,
     top: 0,
   },
 };
@@ -20,8 +20,8 @@ const StartButton: CommonButtonProps = {
   color: "#2ecc71",
   textColor: "white",
   position: {
-    left: 2,
-    top: 4,
+    left: 1,
+    top: 5,
   },
   size: {
     width: 4,
@@ -35,8 +35,8 @@ const StopButton: CommonButtonProps = {
   color: "#e74c3c",
   textColor: "white",
   position: {
-    left: 2,
-    top: 5,
+    left: 1,
+    top: 6,
   },
   size: {
     width: 4,
@@ -48,14 +48,14 @@ const led: StatusProps = {
   type: "status",
   text: "led",
   position: {
-    left: 3,
-    top: 6,
+    left: 2,
+    top: 7,
   },
   size: {
     width: 2,
     height: 2,
   },
-  color: "#008b02",
+  color: "#e65100",
 };
 
 // const toggle1: ToggleProps = {
@@ -72,8 +72,10 @@ const led: StatusProps = {
 //   color: "#e67e22",
 // };
 
+const widgets = [pad1, StartButton, StopButton, led];
+
 export const initialState: WidgetsStateProps = {
-  widgets: [pad1, StartButton, StopButton, led],
+  widgets,
   gridSize: {
     width: 0,
     height: 0,

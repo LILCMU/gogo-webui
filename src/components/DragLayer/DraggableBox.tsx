@@ -1,6 +1,5 @@
 import { CSSProperties, FC, ReactNode, useEffect } from "react";
 import { connect } from "react-redux";
-import { isMobile } from "react-device-detect";
 
 import { useDrag, DragSourceMonitor } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -44,14 +43,14 @@ const DraggableBox: FC<DraggableBoxProps> = (props) => {
   );
 
   useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
+    preview(getEmptyImage(), { captureDraggingState: false });
   });
 
   return (
     <div
       ref={editing ? drag : null}
       style={getStyles(
-        (isMobile && left > 0 ? left - 1 : left) * gridSize.width,
+        left * gridSize.width,
         top * gridSize.height,
         isDragging
       )}

@@ -4,7 +4,6 @@ import { publish, PublishType } from "src/redux/actions/MqttActions";
 
 import { useTheme, TextField, InputAdornment } from "@material-ui/core";
 import { Send } from "@material-ui/icons";
-import { Modal } from "..";
 
 interface InputWidgetProps {
   widget: InputProps;
@@ -25,18 +24,20 @@ const Input: FC<InputWidgetProps> = ({
 
   const theme = useTheme();
 
-  const Content = () => (
+  return (
     <div
       style={{
-        width: `${size.width * gridSize.width}px`,
-        height: `${size.height * gridSize.height}px`,
+        // width: `${size.width * gridSize.width}px`,
+        // height: `${size.height * gridSize.height}px`,
         backgroundColor: color,
         textTransform: "none",
         fontWeight: "normal",
-        fontSize: "20px",
         borderRadius: `${theme.spacing(1)}px`,
         display: "flex",
         alignItems: "center",
+        padding: `0 ${theme.spacing(1)}px`,
+        width: "100%",
+        height: "100%",
       }}
     >
       <TextField
@@ -44,6 +45,8 @@ const Input: FC<InputWidgetProps> = ({
         value={message}
         onChange={({ target }) => setMessage(target.value)}
         disabled={disable}
+        style={{ fontSize: `${size.height * gridSize.height * 0.9}px` }}
+        fullWidth
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -51,7 +54,7 @@ const Input: FC<InputWidgetProps> = ({
                 <Send
                   style={{
                     color: color,
-                    fontSize: "25px",
+                    fontSize: `${size.height * gridSize.height * 0.55}px`,
                   }}
                 />
               </button>
@@ -60,10 +63,6 @@ const Input: FC<InputWidgetProps> = ({
         }}
       />
     </div>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

@@ -11,8 +11,6 @@ import {
 
 import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
 
-import { Modal } from "..";
-
 interface StatusWidgetProps {
   widget: StatusProps;
   disable: boolean;
@@ -49,7 +47,7 @@ const Status: FC<StatusWidgetProps> = ({
     };
   });
 
-  const Content = () => (
+  return (
     <div
       style={{
         display: "flex",
@@ -69,10 +67,6 @@ const Status: FC<StatusWidgetProps> = ({
         }}
       />
     </div>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

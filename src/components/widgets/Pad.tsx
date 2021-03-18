@@ -8,7 +8,6 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
 } from "@material-ui/icons";
-import { Modal } from "..";
 
 interface PadButtonProps {
   publish: PublishType;
@@ -35,24 +34,26 @@ interface PadWidgetProps {
   publish: PublishType;
 }
 
-const Pad: FC<PadWidgetProps> = ({ widget, disable, gridSize, publish }) => {
-  const { size, up, down, left, right } = widget;
+const Pad: FC<PadWidgetProps> = ({ widget, gridSize, disable, publish }) => {
+  const { up, down, left, right, size } = widget;
 
-  const minSize = Math.min(
+  const minDiameter = Math.min(
     size.width * gridSize.width,
     size.height * gridSize.height
   );
 
-  const Content = () => (
+  return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: `${size.width * gridSize.width}px`,
-        height: `${size.height * gridSize.height}px`,
+        // width: `${size.width * gridSize.width}px`,
+        // height: `${size.height * gridSize.height}px`,
         backgroundColor: `${disable ? "#3f3f3f50" : ""}`,
         borderRadius: "8px",
+        width: "100%",
+        height: "100%",
       }}
     >
       <div
@@ -61,12 +62,12 @@ const Pad: FC<PadWidgetProps> = ({ widget, disable, gridSize, publish }) => {
           flexDirection: "column",
           justifyContent: "space-between",
           alignItems: "center",
-          width: `${minSize}px`,
-          height: `${minSize}px`,
           borderRadius: "50%",
           border: "2px solid #3f3f3fae",
-          fontSize: "50px",
+          fontSize: `${minDiameter * 0.23}px`,
           padding: "auto",
+          width: `${minDiameter}px`,
+          height: `${minDiameter}px`,
         }}
       >
         <Button text={up} disable={disable} publish={publish}>
@@ -92,10 +93,6 @@ const Pad: FC<PadWidgetProps> = ({ widget, disable, gridSize, publish }) => {
         </Button>
       </div>
     </div>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

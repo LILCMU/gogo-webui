@@ -1,5 +1,7 @@
+type WidgetType = "pad" | "common" | "status" | "toggle" | "display" | "input";
+
 interface WidgetButton {
-  type: "pad" | "common" | "status" | "toggle" | "display" | "input";
+  type: WidgetType;
   color?: string;
   disable?: boolean;
   position: {

@@ -22,12 +22,17 @@ const WidgetButtonReducer = (
       added_widgets.push(add_widget);
       return { ...state, widgets: added_widgets };
     case EDIT:
-      const { index, widget } = action.payload;
+      const { widget, new_widget } = action.payload;
+      const index = state.widgets.findIndex((w) => w === widget);
+
+      if (index === -1) {
+        return state;
+      }
       new_widgets = state.widgets;
       // if(widget.type==='pad'){
       //   new_state[action.payload.index] = {}
       // }
-      new_widgets[index] = widget;
+      new_widgets[index] = new_widget;
       return { ...state, widgets: new_widgets };
     case REMOVE:
       new_widgets = state.widgets.filter(

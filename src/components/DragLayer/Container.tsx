@@ -1,14 +1,14 @@
 import {
   CSSProperties,
   FC,
-  ReactNode,
+  ReactElement,
   useCallback,
+  useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { connect } from "react-redux";
-import { isMobile } from "react-device-detect";
+import { DropTargetMonitor, useDrop } from "react-dnd";
 
 import {
   edit,
@@ -16,19 +16,20 @@ import {
   change_grid_size,
   ChangeGridSizeType,
 } from "src/redux/actions/WidgetButtonActions";
-
-import { DropTargetMonitor, useDrop } from "react-dnd";
 import update from "immutability-helper";
 import { ItemTypes } from "./ItemTypes";
 import DraggableBox from "./DraggableBox";
-import { useTheme, Grid } from "@material-ui/core";
-import { renderWidget } from "../widgets";
+import { useTheme } from "@material-ui/core";
+// import { renderWidget } from "../widgets";
+import RenderWidget from "../widgets";
+import DragGrid from "./DragGrid";
 import SnapToGrid from "./SnapToGrid";
+import { renderContext } from ".";
 
 export interface BoxMap {
   top: number;
   left: number;
-  item: ReactNode;
+  item: ReactElement;
 }
 
 interface DragItem {
@@ -43,6 +44,7 @@ interface ContainerProps {
   editing: boolean;
   edit: EditType;
   change_grid_size: ChangeGridSizeType;
+  gridVisible: boolean;
 }
 
 const Container: FC<ContainerProps> = ({
@@ -50,16 +52,30 @@ const Container: FC<ContainerProps> = ({
   editing,
   edit,
   change_grid_size,
+  gridVisible,
 }) => {
   const { widgets, gridSize } = widget;
-  const [boxes, setBoxes] = useState<Array<BoxMap>>([]);
+  const [boxes, setBoxes] = useState<BoxMap[]>([]);
+
+  const renderer = useContext(renderContext);
+  const { render } = renderer;
 
   useEffect(() => {
-    const BoxList: Array<BoxMap> = widgets.map((widget) =>
-      renderWidget(widget, editing, gridSize)
+    const BoxList: BoxMap[] = widgets.map((widget) =>
+      // renderWidget(widget, editing, gridSize)
+      ({
+        ...widget.position,
+        item: (
+          <RenderWidget
+            widget={widget}
+            editing={editing || gridVisible}
+            gridSize={gridSize}
+          />
+        ),
+      })
     );
     setBoxes(BoxList);
-  }, [widgets, editing, gridSize]);
+  }, [editing, gridVisible, widgets, gridSize]);
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
@@ -94,7 +110,10 @@ const Container: FC<ContainerProps> = ({
         moveBox(item.id, left, top);
 
         const index = parseInt(item.id);
-        edit(index, { ...widgets[index], position: { left, top } });
+        if (widgets[index].position !== { left, top }) {
+          edit(widgets[index], { ...widgets[index], position: { left, top } });
+          if (render) render();
+        }
 
         return undefined;
       },
@@ -113,22 +132,11 @@ const Container: FC<ContainerProps> = ({
       theme.spacing(1)
     }px`,
     flexGrow: 1,
-    padding: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
   };
 
   return (
     <div style={styles} ref={drop}>
-      {/* {widgets.map((widget, index) => {
-        const Widget = renderWidget(widget, editing, gridSize);
-        return (
-          <DraggableBox
-            key={index.toString()}
-            id={index.toString()}
-            {...Widget}
-            editing={editing}
-          />
-        );
-      })} */}
       {boxes.map((widget, index) => {
         return (
           <DraggableBox
@@ -139,70 +147,8 @@ const Container: FC<ContainerProps> = ({
           />
         );
       })}
-      <DragGrid change_grid_size={change_grid_size} editing={editing} />
+      <DragGrid change_grid_size={change_grid_size} visible={gridVisible} />
     </div>
-  );
-};
-
-const DragGrid: FC<{
-  change_grid_size: ChangeGridSizeType;
-  editing: boolean;
-}> = ({ change_grid_size, editing }) => {
-  const theme = useTheme();
-
-  const ref = useRef<any>(null);
-
-  useEffect(() => {
-    const { offsetWidth, offsetHeight } = ref.current;
-    change_grid_size(offsetWidth, offsetHeight);
-  }, [ref, change_grid_size]);
-
-  const styles: CSSProperties = {
-    backgroundColor: "#333",
-    color: "white",
-    textTransform: "uppercase",
-    textAlign: "center",
-    // opacity: 0.25,
-    border: "0.5px solid black",
-    borderRadius: `${theme.spacing(1)}px`,
-    overflow: "hidden",
-  };
-
-  return (
-    <Grid container style={{ height: "100%", opacity: editing ? 0.25 : 0 }}>
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((_, index) =>
-        isMobile ? (
-          <Grid key={index} container item xs={12}>
-            <Grid item xs={2} ref={index === 1 ? ref : null} style={styles} />
-            <Grid item xs={2} style={styles} />
-            <Grid item xs={2} style={styles} />
-            <Grid item xs={2} style={styles} />
-            <Grid item xs={2} style={styles} />
-            <Grid item xs={2} style={styles} />
-          </Grid>
-        ) : (
-          <>
-            <Grid key={index} container item xs={6}>
-              <Grid
-                ref={index === 1 ? ref : null}
-                item
-                xs={3}
-                style={styles}
-              ></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-            </Grid>
-            <Grid container item xs={6}>
-              <Grid item xs={3} style={styles}></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-              <Grid item xs={3} style={styles}></Grid>
-            </Grid>
-          </>
-        )
-      )}
-    </Grid>
   );
 };
 

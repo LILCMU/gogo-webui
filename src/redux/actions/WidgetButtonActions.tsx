@@ -20,11 +20,11 @@ export type RemoveType = (
 };
 
 export type EditType = (
-  index: number,
-  widget: AllWidgetButtonProps
+  widget: AllWidgetButtonProps,
+  new_widget: AllWidgetButtonProps
 ) => {
   type: string;
-  payload: { index: number; widget: AllWidgetButtonProps };
+  payload: { widget: AllWidgetButtonProps; new_widget: AllWidgetButtonProps };
 };
 
 export type ChangeGridSizeType = (
@@ -44,8 +44,8 @@ export const remove: RemoveType = (index) => ({
   },
 });
 
-export const edit: EditType = (index, widget) => {
-  const payload = { index, widget };
+export const edit: EditType = (widget, new_widget) => {
+  const payload = { widget, new_widget };
   return {
     type: EDIT,
     payload: payload,

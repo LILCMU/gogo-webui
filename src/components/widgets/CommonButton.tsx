@@ -3,31 +3,24 @@ import { connect } from "react-redux";
 import { publish, PublishType } from "src/redux/actions/MqttActions";
 
 import { useTheme, Button } from "@material-ui/core";
-import { Modal } from "..";
 
 interface CommonProps {
   widget: CommonButtonProps;
   disable: boolean;
   publish: PublishType;
-  gridSize: GridSize;
 }
 
-const CommonButton: FC<CommonProps> = ({
-  widget,
-  disable,
-  gridSize,
-  publish,
-}) => {
-  const { text, color = "", size } = widget;
+const CommonButton: FC<CommonProps> = ({ widget, disable, publish }) => {
+  const { text, color = "" } = widget;
 
   const theme = useTheme();
 
-  const Content = () => (
+  return (
     <Button
       variant="contained"
       style={{
-        width: `${size.width * gridSize.width}px`,
-        height: `${size.height * gridSize.height}px`,
+        width: "100%",
+        height: "100%",
         backgroundColor: color,
         textTransform: "none",
         fontWeight: "normal",
@@ -39,10 +32,6 @@ const CommonButton: FC<CommonProps> = ({
     >
       {text}
     </Button>
-  );
-
-  return (
-    <>{disable ? <Modal widget={widget}>{Content()}</Modal> : Content()}</>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useContext } from "react";
 import { connect } from "react-redux";
 import { SwatchesPicker } from "react-color";
 
@@ -28,6 +28,7 @@ import {
 import { Stop, Delete, Save, Cancel } from "@material-ui/icons";
 
 import { Spacer } from ".";
+import { renderContext } from "./DragLayer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,7 +80,11 @@ const MyModal = ({
   const [edit_channel, Edit_channel] = useState(channel);
   const [colorPicker, setColorPicker] = useState(false);
 
+  const renderer = useContext(renderContext);
+  const { render } = renderer;
+
   const handleOpen = () => {
+    if (widget && widget !== editInfo) setEditInfo(widget);
     setOpen(true);
   };
 
@@ -92,13 +97,15 @@ const MyModal = ({
       if (adding) {
         add(editInfo as AllWidgetButtonProps);
       } else {
-        const index = widgets.findIndex((w) => w === widget);
-        edit(index, editInfo as AllWidgetButtonProps);
+        // const index = widgets.findIndex((w) => w === widget);
+        edit(widget, editInfo as AllWidgetButtonProps);
       }
     } else {
       change_channel(edit_channel);
     }
+
     handleClose();
+    if (render) render();
   };
 
   const handleRemove = () => {
@@ -106,6 +113,7 @@ const MyModal = ({
       const index = widgets.findIndex((w) => w === widget);
       remove(index);
       handleClose();
+      if (render) render();
     }
   };
 
@@ -119,7 +127,6 @@ const MyModal = ({
         onChange={({ target }) =>
           setEditInfo({ ...editInfo, color: target.value })
         }
-        disabled
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -132,7 +139,8 @@ const MyModal = ({
             </InputAdornment>
           ),
         }}
-        onClick={() => setColorPicker(true)}
+        onFocus={() => setColorPicker(true)}
+        // onBlur={() => setColorPicker(false)}
       />
       {colorPicker && (
         <SwatchesPicker
@@ -333,7 +341,12 @@ const MyModal = ({
       );
     } else {
       return (
-        <Button variant="contained" color="primary" onClick={handleSave}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSave}
+          style={{ width: "100%" }}
+        >
           SAVE
         </Button>
       );
@@ -343,7 +356,7 @@ const MyModal = ({
   return (
     <div {...props}>
       {/* Modal Opener */}
-      <button type="button" onClick={handleOpen}>
+      <button type="button" onClick={handleOpen} {...props}>
         {children}
       </button>
       {/* Modal Opener */}
@@ -358,6 +371,7 @@ const MyModal = ({
         BackdropProps={{
           timeout: 500,
         }}
+        style={{ zIndex: 10000 }}
       >
         <Fade in={open}>
           <div className={classes.paper}>

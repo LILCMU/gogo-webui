@@ -1,5 +1,7 @@
-import { BoxMap } from "../DragLayer/Container";
-// import { CommonButton, Pad, Status } from ".";
+import { FC, ReactNode } from "react";
+
+import Modal from "../Modal";
+import Resizable from "./Resizable";
 import CommonButton from "./CommonButton";
 import Display from "./Display";
 import Input from "./Input";
@@ -7,86 +9,79 @@ import Pad from "./Pad";
 import Status from "./Status";
 import ToggleButton from "./ToggleButton";
 
-export { CommonButton, Pad, Status, ToggleButton };
+interface renderType {
+  widget: AllWidgetButtonProps;
+  editing: boolean;
+  gridSize: GridSize;
+}
 
-type renderType = (
-  widget: AllWidgetButtonProps,
-  editing: boolean,
-  gridSize: GridSize
-) => BoxMap;
+const RenderWidget: FC<renderType> = (props) => {
+  const { widget, editing, gridSize } = props;
 
-export const renderWidget: renderType = (widget, editing, gridSize) => {
-  const { type, position } = widget;
-  switch (type) {
-    case "common":
-      return {
-        ...position,
-        item: (
+  const { type } = widget;
+
+  const getWidget: () => ReactNode = () => {
+    switch (type) {
+      case "common":
+        return (
           <CommonButton
             widget={widget as CommonButtonProps}
             disable={editing}
-            gridSize={gridSize}
           />
-        ),
-      };
-    case "pad":
-      return {
-        ...position,
-        item: (
+        );
+
+      case "pad":
+        return (
           <Pad
             widget={widget as PadProps}
             disable={editing}
             gridSize={gridSize}
           />
-        ),
-      };
-    case "status":
-      return {
-        ...position,
-        item: (
+        );
+
+      case "status":
+        return (
           <Status
             widget={widget as StatusProps}
             disable={editing}
             gridSize={gridSize}
           />
-        ),
-      };
-    case "toggle":
-      return {
-        ...position,
-        item: (
+        );
+
+      case "toggle":
+        return (
           <ToggleButton
             widget={widget as ToggleProps}
             disable={editing}
             gridSize={gridSize}
           />
-        ),
-      };
-    case "display":
-      return {
-        ...position,
-        item: (
-          <Display
-            widget={widget as ToggleProps}
-            disable={editing}
-            gridSize={gridSize}
-          />
-        ),
-      };
+        );
 
-    case "input":
-      return {
-        ...position,
-        item: (
+      case "display":
+        return <Display widget={widget as ToggleProps} disable={editing} />;
+
+      case "input":
+        return (
           <Input
             widget={widget as InputProps}
             disable={editing}
             gridSize={gridSize}
           />
-        ),
-      };
+        );
+    }
+  };
 
-    default:
-      return { ...position, item: null };
-  }
+  return (
+    <Resizable widget={widget} gridSize={gridSize} editing={editing}>
+      {editing ? (
+        <Modal widget={widget} style={{ width: "100%", height: "100%" }}>
+          {getWidget()}
+        </Modal>
+      ) : (
+        getWidget()
+      )}
+    </Resizable>
+  );
 };
+
+export default RenderWidget;

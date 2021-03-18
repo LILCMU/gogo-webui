@@ -14,6 +14,7 @@ import {
   Input,
   TextFields,
 } from "@material-ui/icons";
+import { isMobile } from "react-device-detect";
 
 import { Modal } from "..";
 
@@ -32,6 +33,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
       type: "common",
       position: { left: 0, top: 0 },
       text: "text",
+      color: "#3f3f3f35",
       size: { width: 4, height: 1 },
     },
     pad: {
@@ -47,24 +49,28 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
       type: "status",
       position: { left: 0, top: 0 },
       text: "text",
+      color: "#3f3f3f35",
       size: { width: 2, height: 2 },
     },
     toggle: {
       type: "toggle",
       position: { left: 0, top: 0 },
       text: "text",
+      color: "#3f3f3f35",
       size: { width: 2, height: 1 },
     },
     display: {
       type: "display",
       position: { left: 0, top: 0 },
       text: "text",
+      color: "#3f3f3f35",
       size: { width: 2, height: 1 },
     },
     input: {
       type: "input",
       position: { left: 0, top: 0 },
       text: "text",
+      color: "#3f3f3f35",
       size: { width: 4, height: 1 },
     },
   };
@@ -72,8 +78,8 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
   const list = () => (
     <>
       <div>
-        <List style={{ width: "40vw" }}>
-          <Modal widget={defaultProps.common} adding>
+        <List style={{ width: isMobile ? "45vw" : "35vw" }}>
+          <Modal widget={defaultProps.common} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <RadioButtonUnchecked />
@@ -85,7 +91,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
             </ListItem>
           </Modal>
 
-          <Modal widget={defaultProps.pad} adding>
+          <Modal widget={defaultProps.pad} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <OpenWith />
@@ -97,7 +103,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
             </ListItem>
           </Modal>
 
-          <Modal widget={defaultProps.status} adding>
+          <Modal widget={defaultProps.status} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <EmojiObjects />
@@ -109,7 +115,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
             </ListItem>
           </Modal>
 
-          <Modal widget={defaultProps.toggle} adding>
+          <Modal widget={defaultProps.toggle} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <ToggleOff />
@@ -121,7 +127,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
             </ListItem>
           </Modal>
 
-          <Modal widget={defaultProps.display} adding>
+          <Modal widget={defaultProps.display} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <Input />
@@ -133,7 +139,7 @@ const WidgetDrawer: FC<DrawerProps> = ({ children, visible, setVisible }) => {
             </ListItem>
           </Modal>
 
-          <Modal widget={defaultProps.input} adding>
+          <Modal widget={defaultProps.input} style={{ width: "100%" }} adding>
             <ListItem button>
               <ListItemIcon>
                 <TextFields />
