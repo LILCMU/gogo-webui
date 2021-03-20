@@ -23,7 +23,7 @@ const MyAppBar = () => {
   const classes = useStyles();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" className={classes.root}>
       <Toolbar>
         {/* <IconButton
           edge="start"

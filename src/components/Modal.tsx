@@ -1,14 +1,34 @@
-import React, { FC, useState } from "react";
+import { useState, ReactNode, useContext } from "react";
 import { connect } from "react-redux";
-import { edit } from "src/redux/actions/WidgetButtonActions";
+import { SwatchesPicker } from "react-color";
+
+import {
+  edit,
+  EditType,
+  remove,
+  RemoveType,
+  add,
+  AddType,
+} from "src/redux/actions/WidgetButtonActions";
+import {
+  change_channel,
+  ChangeChannelType,
+} from "src/redux/actions/MqttActions";
 
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+
+import {
+  Modal,
+  Backdrop,
+  Fade,
+  TextField,
+  Button,
+  InputAdornment,
+} from "@material-ui/core";
+import { Stop, Delete, Save, Cancel } from "@material-ui/icons";
+
 import { Spacer } from ".";
+import { renderContext } from "./DragLayer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,22 +49,42 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const MyModal: FC<any> = ({ children, ...props }) => {
+interface ModalProps {
+  children?: ReactNode;
+  widget?: AllWidgetButtonProps;
+  widgets: Array<AllWidgetButtonProps>;
+  channel: string;
+  edit: EditType;
+  change_channel: ChangeChannelType;
+  add: AddType;
+  remove: RemoveType;
+  adding?: boolean;
+}
+
+const MyModal = ({
+  children,
+  widget,
+  widgets,
+  channel,
+  edit,
+  change_channel,
+  add,
+  remove,
+  adding,
+  ...props
+}: ModalProps) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
-  // const { up, down, left, right } = props as PadProps;
-  // const { text, type, color } = props as CommonButtonProps;
+  const [editInfo, setEditInfo] = useState({ ...widget });
+  const [edit_channel, Edit_channel] = useState(channel);
+  const [colorPicker, setColorPicker] = useState(false);
 
-  const { text, type, color, textColor, up, down, left, right, size } = props;
-
-  const [edit_text, setText] = useState(text);
-  const [edit_up, setUp] = useState(up);
-  const [edit_down, setDown] = useState(down);
-  const [edit_left, setLeft] = useState(left);
-  const [edit_right, setRight] = useState(right);
+  const renderer = useContext(renderContext);
+  const { render } = renderer;
 
   const handleOpen = () => {
+    if (widget && widget !== editInfo) setEditInfo(widget);
     setOpen(true);
   };
 
@@ -52,36 +92,274 @@ const MyModal: FC<any> = ({ children, ...props }) => {
     setOpen(false);
   };
 
-  const handleEdit = () => {
-    const { edit, index } = props;
-
-    let widget = {};
-
-    if (type === "pad") {
-      widget = {
-        up: edit_up,
-        down: edit_down,
-        left: edit_left,
-        right: edit_right,
-        size: size,
-        type,
-      };
-    } else if (type === "common") {
-      widget = { type, text: edit_text, color, textColor };
+  const handleSave = () => {
+    if (widget !== undefined) {
+      if (adding) {
+        add(editInfo as AllWidgetButtonProps);
+      } else {
+        // const index = widgets.findIndex((w) => w === widget);
+        edit(widget, editInfo as AllWidgetButtonProps);
+      }
     } else {
-      widget = { type, text: edit_text };
+      change_channel(edit_channel);
     }
-    edit(index, widget);
+
     handleClose();
+    if (render) render();
+  };
+
+  const handleRemove = () => {
+    if (widget !== undefined) {
+      const index = widgets.findIndex((w) => w === widget);
+      remove(index);
+      handleClose();
+      if (render) render();
+    }
+  };
+
+  const Picker = (
+    <>
+      <Spacer height="15px" />
+      <TextField
+        id="color"
+        label="COLOR"
+        value={(editInfo as CommonButtonProps).color}
+        onChange={({ target }) =>
+          setEditInfo({ ...editInfo, color: target.value })
+        }
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Stop
+                style={{
+                  color: (editInfo as CommonButtonProps).color,
+                  fontSize: "25px",
+                }}
+              />
+            </InputAdornment>
+          ),
+        }}
+        onFocus={() => setColorPicker(true)}
+        // onBlur={() => setColorPicker(false)}
+      />
+      {colorPicker && (
+        <SwatchesPicker
+          onChange={(color) => {
+            setEditInfo({ ...editInfo, color: color.hex });
+            setColorPicker(false);
+          }}
+        />
+      )}
+    </>
+  );
+
+  const editContent = () => {
+    // editing Widget
+    if (widget !== undefined) {
+      let Widget: ReactNode = null;
+      switch (widget.type) {
+        case "common":
+          Widget = (
+            <>
+              <TextField
+                id="text"
+                label="TEXT"
+                value={(editInfo as CommonButtonProps).text}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, text: target.value })
+                }
+                style={{ width: "100%" }}
+              />
+              {Picker}
+            </>
+          );
+          break;
+        case "status":
+          Widget = (
+            <>
+              <TextField
+                id="text"
+                label="TEXT"
+                style={{ width: "100%" }}
+                value={(editInfo as StatusProps).text}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, text: target.value })
+                }
+              />
+              {Picker}
+            </>
+          );
+          break;
+        case "toggle":
+          Widget = (
+            <>
+              <TextField
+                id="text"
+                label="TEXT"
+                style={{ width: "100%" }}
+                value={(editInfo as ToggleProps).text}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, text: target.value })
+                }
+              />
+              {Picker}
+            </>
+          );
+          break;
+        case "display":
+          Widget = (
+            <>
+              <TextField
+                id="text"
+                label="TEXT"
+                value={(editInfo as CommonButtonProps).text}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, text: target.value })
+                }
+                style={{ width: "100%" }}
+              />
+              {Picker}
+            </>
+          );
+          break;
+        case "input":
+          Widget = (
+            <>
+              <TextField
+                id="text"
+                label="TEXT"
+                value={(editInfo as CommonButtonProps).text}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, text: target.value })
+                }
+                style={{ width: "100%" }}
+              />
+              {Picker}
+            </>
+          );
+          break;
+        case "pad":
+          Widget = (
+            <>
+              <TextField
+                style={{ width: "100%" }}
+                id="up"
+                label="UP"
+                value={(editInfo as PadProps).up}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, up: target.value })
+                }
+              />
+              <Spacer height="15px" />
+              <TextField
+                style={{ width: "100%" }}
+                id="down"
+                label="DOWN"
+                value={(editInfo as PadProps).down}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, down: target.value })
+                }
+              />
+              <Spacer height="15px" />
+              <TextField
+                style={{ width: "100%" }}
+                id="left"
+                label="LEFT"
+                value={(editInfo as PadProps).left}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, left: target.value })
+                }
+              />
+              <Spacer height="15px" />
+              <TextField
+                style={{ width: "100%" }}
+                id="right"
+                label="RIGHT"
+                value={(editInfo as PadProps).right}
+                onChange={({ target }) =>
+                  setEditInfo({ ...editInfo, right: target.value })
+                }
+              />
+            </>
+          );
+          break;
+      }
+      return Widget;
+    } else {
+      // change channel
+      return (
+        <TextField
+          id="channel"
+          label="channel"
+          value={edit_channel}
+          onChange={({ target }) => Edit_channel(target.value)}
+        />
+      );
+    }
+  };
+
+  const ButtonsContent = () => {
+    if (widget !== undefined) {
+      return (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            startIcon={<Save />}
+            fullWidth
+          >
+            {adding ? "Add" : "SAVE"}
+          </Button>
+          <Spacer height="15px" />
+
+          {!adding ? (
+            <>
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                startIcon={<Delete />}
+                onClick={handleRemove}
+              >
+                Delete
+              </Button>
+              <Spacer height="15px" />
+            </>
+          ) : null}
+
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleClose}
+            startIcon={<Cancel />}
+            fullWidth
+          >
+            Cancel
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSave}
+          style={{ width: "100%" }}
+        >
+          SAVE
+        </Button>
+      );
+    }
   };
 
   return (
-    <div>
-      <button type="button" onClick={handleOpen}>
-        {/* react-transition-group */}
-        {/* {/* Modal Opener */}
+    <div {...props}>
+      {/* Modal Opener */}
+      <button type="button" onClick={handleOpen} {...props}>
         {children}
       </button>
+      {/* Modal Opener */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -93,83 +371,13 @@ const MyModal: FC<any> = ({ children, ...props }) => {
         BackdropProps={{
           timeout: 500,
         }}
+        style={{ zIndex: 10000 }}
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            {/* <h2 id="transition-modal-title">Transition modal</h2>
-            <p id="transition-modal-description">
-              react-transition-group animates me.
-            </p> */}
-            {type === "pad" ? (
-              <>
-                <TextField
-                  id="up"
-                  label="UP"
-                  value={edit_up}
-                  onChange={({ target }) => setUp(target.value)}
-                />
-                <Spacer height="15px" />
-                <TextField
-                  id="down"
-                  label="DOWN"
-                  value={edit_down}
-                  onChange={({ target }) => setDown(target.value)}
-                />
-                <Spacer height="15px" />
-                <TextField
-                  id="left"
-                  label="LEFT"
-                  value={edit_left}
-                  onChange={({ target }) => setLeft(target.value)}
-                />
-                <Spacer height="15px" />
-                <TextField
-                  id="right"
-                  label="RIGHT"
-                  value={edit_right}
-                  onChange={({ target }) => setRight(target.value)}
-                />
-              </>
-            ) : (
-              <>
-                <TextField
-                  id="text"
-                  label="TEXT"
-                  value={edit_text}
-                  onChange={({ target }) => setText(target.value)}
-                />
-              </>
-            )}
-            {/* <div
-              style={{
-                // display: "flex",
-                // flexDirection: "row",
-                // alignItems: "center",
-                // justifyContent: "center",
-                marginTop: "15px",
-              }}
-            > */}
+            {editContent()}
             <Spacer height="25px" />
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleEdit()}
-              fullWidth
-            >
-              SAVE
-            </Button>
-            <Spacer height="15px" />
-
-            <Button
-              variant="contained"
-              color="secondary"
-              fullWidth
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-            {/* </div> */}
+            {ButtonsContent()}
           </div>
         </Fade>
       </Modal>
@@ -177,8 +385,17 @@ const MyModal: FC<any> = ({ children, ...props }) => {
   );
 };
 
-const mapDispatchToProps = {
-  edit,
+const mapStateToProps = (state: AppStateProps, ownProps: any) => {
+  const { widgets } = state.widget;
+  const { channel } = state.mqtt;
+  return { widgets, channel, ...ownProps };
 };
 
-export default connect(null, mapDispatchToProps)(MyModal);
+const mapDispatchToProps = {
+  edit,
+  change_channel,
+  add,
+  remove,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyModal);
