@@ -58,7 +58,13 @@ const RenderWidget: FC<renderType> = (props) => {
         );
 
       case "display":
-        return <Display widget={widget as ToggleProps} disable={editing} />;
+        return (
+          <Display
+            widget={widget as ToggleProps}
+            disable={editing}
+            gridSize={gridSize}
+          />
+        );
 
       case "input":
         return (

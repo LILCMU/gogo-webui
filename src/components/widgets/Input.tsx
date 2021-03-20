@@ -29,7 +29,7 @@ const Input: FC<InputWidgetProps> = ({
       style={{
         // width: `${size.width * gridSize.width}px`,
         // height: `${size.height * gridSize.height}px`,
-        backgroundColor: color,
+        backgroundColor: "#ddd",
         textTransform: "none",
         fontWeight: "normal",
         borderRadius: `${theme.spacing(1)}px`,
@@ -45,7 +45,10 @@ const Input: FC<InputWidgetProps> = ({
         value={message}
         onChange={({ target }) => setMessage(target.value)}
         disabled={disable}
-        style={{ fontSize: `${size.height * gridSize.height * 0.9}px` }}
+        style={{
+          fontSize: `${size.height * gridSize.height * 0.9}px`,
+          border: `2px solid ${color}`,
+        }}
         fullWidth
         InputProps={{
           endAdornment: (

@@ -14,6 +14,7 @@ import { useTheme, Button } from "@material-ui/core";
 interface DisplayWidgetProps {
   widget: DisplayProps;
   disable: boolean;
+  gridSize: GridSize;
   subscribe: SubscribeType;
   on_message: OnMessageType;
   unsubscribe: UnsubscribeType;
@@ -22,11 +23,12 @@ interface DisplayWidgetProps {
 const Display: FC<DisplayWidgetProps> = ({
   widget,
   disable,
+  gridSize,
   subscribe,
   on_message,
   unsubscribe,
 }) => {
-  const { text, color = "" } = widget;
+  const { text, color = "", size } = widget;
   const [message, setMessage] = useState("Message");
 
   const theme = useTheme();
@@ -53,12 +55,15 @@ const Display: FC<DisplayWidgetProps> = ({
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: `${theme.palette.grey[400]}`,
+        backgroundColor: "#ddd",
         textTransform: "none",
         fontWeight: "normal",
-        fontSize: "20px",
+        fontSize: `${size.height * gridSize.height * 0.2}px`,
         borderRadius: `${theme.spacing(1)}px`,
         border: `5px solid ${color}`,
+        whiteSpace: "normal",
+        wordWrap: "break-word",
+        color: color,
       }}
       onClick={() => subscribe(text)}
       disabled
