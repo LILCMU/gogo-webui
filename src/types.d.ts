@@ -49,9 +49,21 @@ type GridSize = {
   height: number;
 };
 
+interface Project {
+  name: string;
+  key: string;
+  description: string;
+}
+
+interface SavedProject extends Project {
+  widgets: Array<AllWidgetButtonProps>;
+  channel: string;
+}
+
 type WidgetsStateProps = {
   widgets: Array<AllWidgetButtonProps>;
   gridSize: GridSize;
+  project?: Project;
 };
 
 type MqttStateProps = {
@@ -64,4 +76,13 @@ type MqttStateProps = {
 type AppStateProps = {
   widget: WidgetsStateProps;
   mqtt: MqttStateProps;
+  firebase: ExtendedFirebaseInstance;
+};
+
+type ProfileProps = {
+  displayName: string;
+  uid: string;
+  email: string;
+  photoUrl: string;
+  providerId: string;
 };

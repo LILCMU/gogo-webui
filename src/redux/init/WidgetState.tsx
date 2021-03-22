@@ -74,6 +74,8 @@ const led: StatusProps = {
 
 const widgets = [pad1, StartButton, StopButton, led];
 
+export const InitialWidgets = [pad1, StartButton, StopButton, led];
+
 export const initialState: WidgetsStateProps = {
   widgets,
   gridSize: {

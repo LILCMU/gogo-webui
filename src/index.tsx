@@ -7,12 +7,33 @@ import "./index.css";
 
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";
+
+import {
+  ReactReduxFirebaseProvider,
+  ReactReduxFirebaseProviderProps,
+} from "react-redux-firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
+import { firebaseConfig } from "./firebaseConfig";
 // import reportWebVitals from './reportWebVitals';
+
+firebase.initializeApp(firebaseConfig);
+
+const rrfProps: ReactReduxFirebaseProviderProps = {
+  firebase,
+  config: {
+    userProfile: "users",
+  },
+  dispatch: store.dispatch,
+};
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <App />
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
