@@ -43,7 +43,7 @@ const DraggableBox: FC<DraggableBoxProps> = (props) => {
   );
 
   useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: false });
+    preview(getEmptyImage(), { captureDraggingState: true });
   });
 
   return (

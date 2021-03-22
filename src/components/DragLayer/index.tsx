@@ -49,15 +49,17 @@ const DragLayer: FC = () => {
   const [editModeVisible, setEditModeVisible] = useState(false);
   const [DrawerVisible, setDrawerVisible] = useState<boolean>(false);
 
+  const renderer = () => {
+    setEditing(false);
+    setTimeout(() => {
+      setEditing(true);
+    }, 100);
+  };
+
   return (
     <renderContext.Provider
       value={{
-        render: () => {
-          setEditing(false);
-          setTimeout(() => {
-            setEditing(true);
-          }, 100);
-        },
+        render: renderer,
       }}
     >
       <div style={{ position: "relative" }}>
@@ -84,6 +86,7 @@ const DragLayer: FC = () => {
               onClick={() => {
                 setEditing(true);
                 setEditModeVisible(true);
+                renderer();
               }}
             >
               <Edit />
@@ -135,9 +138,11 @@ const DragLayer: FC = () => {
               aria-label="Channel"
               className={clsx(classes.fab, classes.fabChannel)}
             >
-              <Modal style={{ position: "relative" }}>
-                <Code />
-              </Modal>
+              {editing && (
+                <Modal style={{ position: "relative" }}>
+                  <Code />
+                </Modal>
+              )}
             </Fab>
           </Tooltip>
         </Zoom>

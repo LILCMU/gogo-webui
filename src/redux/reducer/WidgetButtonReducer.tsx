@@ -4,6 +4,8 @@ import {
   EDIT,
   REMOVE,
   CHANGE_GRID_SIZE,
+  SET_PROJECT,
+  SET_WIDGET,
 } from "../actions/WidgetButtonActions";
 import { initialState } from "../init/WidgetState";
 
@@ -43,6 +45,12 @@ const WidgetButtonReducer = (
     case CHANGE_GRID_SIZE:
       const { width, height } = action.payload;
       return { ...state, gridSize: { width, height } };
+    case SET_PROJECT:
+      const { project } = action.payload;
+      return { ...state, project };
+    case SET_WIDGET:
+      const { widgets } = action.payload;
+      return { ...state, widgets };
     default:
       return state;
   }
