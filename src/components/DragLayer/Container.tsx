@@ -110,7 +110,8 @@ const Container: FC<ContainerProps> = ({
         moveBox(item.id, left, top);
 
         const index = parseInt(item.id);
-        if (widgets[index].position !== { left, top }) {
+        const { left: pLeft, top: pTop } = widgets[index].position;
+        if (left !== pLeft || top !== pTop) {
           edit(widgets[index], { ...widgets[index], position: { left, top } });
           if (render) render();
         }
